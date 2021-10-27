@@ -129,6 +129,14 @@ check_files "$path"
 path="datasets/clustalOmega/wgs.ANCA.1_500.fsa"
 check_files "$path"
 
+# query_shuffled.faa.gz
+path="datasets/diamond/query_shuffled.faa.gz"
+check_files "$path"
+
+# uniref50_annot_shuffled.faa.gz
+path="datasets/diamond/uniref50_annot_shuffled.faa.gz"
+check_files "$path"
+
 # OE-38_R1
 path="datasets/SINA/OE-38_R1.fa"
 check_files "$path"
@@ -200,6 +208,11 @@ then
 else
         echo -e "${red}Something seems to be wrong with $name. Please check and maybe reinstall again.${nc}"
 fi
+
+# Diamond
+cmd="diamond version"
+name="Diamond"
+check_tool "$cmd" "$name"
 
 # Velveth
 cmd="velvet/velveth"

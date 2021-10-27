@@ -80,6 +80,13 @@ else
 	mkdir benchmark_output/clustalOmega
 fi
 
+if [ -d benchmark_output/diamond ]
+then
+        echo "Directory benchmark_output/diamond already exists."
+else
+	mkdir benchmark_output/diamond
+fi
+
 if [ -d benchmark_output/gromacs ]
 then
         echo "Directory benchmark_output/gromacs already exists."
@@ -171,6 +178,13 @@ else
         mkdir datasets/BWA//GRCh38_full_analysis_set_plus_decoy_hla/
 fi
 
+if [ -d datasets/diamond ]
+then
+        echo "Directory datasets/diamond already exists."
+else
+	mkdir datasets/diamond
+fi
+
 if [ -d datasets/clustalOmega ]
 then
         echo "Directory datasets/clustalOmega already exists."
@@ -254,6 +268,14 @@ then
 else
 	mkdir clustalOmega
 fi
+
+if [ -d diamond ]
+then
+        echo "Directory diamond already exists."
+else
+	mkdir diamond
+fi
+
 
 if [ -d IDBA ]
 then
@@ -520,6 +542,22 @@ else
 fi
 
 
+if [ -e datasets/diamond/query_shuffled.faa.gz ]
+then
+        echo "File datasets/diamond/query_shuffled.faa.gz already exists."
+else
+	wget --content-disposition https://figshare.com/ndownloader/files/25416962 -P datasets/diamond >>log/dataset_diamond_query_shuffled.log 2>&1
+fi
+
+
+if [ -e datasets/diamond/uniref50_annot_shuffled.faa.gz ]
+then
+        echo "File datasets/diamond/uniref50_annot_shuffled.faa.gz already exists."
+else
+	wget --content-disposition https://figshare.com/ndownloader/files/25497380 -P datasets/diamond >>log/dataset_diamond_uniref50_annot_shuffled.log 2>&1
+fi
+
+
 if [ -d datasets/tensorflow/cifar-10-batches-bin ]
 then
 	echo "Directory datasets/tensorflow/cifar-10-batches-bin already exists."
@@ -639,6 +677,16 @@ else
         wget https://s3.denbi.uni-tuebingen.de/max/bwa-0.7.17.tar.bz2 -P BWA >>log/download_BWA.log 2>&1
         tar -xf BWA/bwa-0.7.17.tar.bz2 -C BWA/ >>log/download_BWA.log 2>&1
         rm BWA/bwa-0.7.17.tar.bz2 >>log/download_BWA.log 2>&1
+fi
+
+# Download Diamond sources
+if [ -d diamond/diamond-2.0.13 ]
+then
+        echo "Directory diamond/diamond-2.0.13 already exists."
+else
+        wget https://github.com/bbuchfink/diamond/archive/refs/tags/v2.0.13.tar.gz -P diamond >>log/download_diamond.log 2>&1
+        tar -xzf diamond/v2.0.13.tar.gz -C diamond/ >>log/download_diamond.log 2>&1
+        rm diamond/v2.0.13.tar.gz >>log/download_diamond.log 2>&1
 fi
 
 # Download Velvet github repository
@@ -803,6 +851,34 @@ else
 	sudo make static-libs >>../../log/install_bowtie2.log 2>&1
 	make -j$(nproc) STATIC_BUILD=1 >>../../log/install_bowtie2.log 2>&1
 	cd ../../
+fi
+
+# Compile and install diamond
+if [ -e diamond/diamond-2.0.13/bin/diamond ]
+then      
+        while true; do
+                read -p "Diamond seems already to be installed, do you want to recompile it?" yn
+                case $yn in
+                        [Yy]* )	cd diamond/diamond-2.0.13/
+                                mkdir bin
+                                cd bin
+                                cmake3 .. 2>&1
+                                make -j4 2>&1
+                                cd ../../../
+                                break;;
+                        [Nn]* ) echo "Diamond will not be recompiled"
+                                break;;
+                        * ) echo "Please answer yes or no."
+                                ;;
+                esac
+        done
+else
+	cd diamond/diamond-2.0.13/
+        mkdir bin
+        cd bin
+        cmake3 .. 2>&1
+        make -j4 2>&1
+        cd ../../../
 fi
 
 progress_bar 80 75

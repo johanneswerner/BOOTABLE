@@ -8,6 +8,7 @@ This toolsuite currently consists of the following tools
 - BBMap
 - Bowtie2
 - BWA
+- Diamond
 - Velvet
 - IDBA
 - GROMACS
