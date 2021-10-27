@@ -210,7 +210,7 @@ else
 fi
 
 # Diamond
-cmd="diamond version"
+cmd="diamond/diamond-2.0.13/bin/diamond version"
 name="Diamond"
 check_tool "$cmd" "$name"
 
