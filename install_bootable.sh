@@ -862,8 +862,8 @@ then
                         [Yy]* )	cd diamond/diamond-2.0.13/
                                 mkdir bin
                                 cd bin
-                                cmake3 .. 2>&1
-                                make -j4 2>&1
+                                cmake3 .. >>../../log/install_diamond.log 2>&1
+                                make -j4 >>../../log/install_diamond.log 2>&1
                                 cd ../../../
                                 break;;
                         [Nn]* ) echo "Diamond will not be recompiled"
@@ -876,8 +876,8 @@ else
 	cd diamond/diamond-2.0.13/
         mkdir bin
         cd bin
-        cmake3 .. 2>&1
-        make -j4 2>&1
+        cmake3 .. >>../../log/install_diamond.log 2>&1
+        make -j4 >>../../log/install_diamond.log 2>&1
         cd ../../../
 fi
 
