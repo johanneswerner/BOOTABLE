@@ -354,71 +354,71 @@ fi
 
 
 
-if [ $toolgroup == "all" ] || [ $toolgroup == "ml" ] || [ $toolgroup == "tensorflow" ]
-then
-	# Tensorflow
-	echo "Running Tensorflow benchmark with $tf_steps steps"
-	rm -rf benchmark_output/tensorflow/*
-	echo "Replica_$replica Tensorflow with $cores cores on dataset cifar10 with $tf_steps" >> results/benchmark_tensorflow_time_$cores.txt
-	date >> results/benchmark_tensorflow_time_$cores.txt
+# if [ $toolgroup == "all" ] || [ $toolgroup == "ml" ] || [ $toolgroup == "tensorflow" ]
+# then
+# 	# Tensorflow
+# 	echo "Running Tensorflow benchmark with $tf_steps steps"
+# 	rm -rf benchmark_output/tensorflow/*
+# 	echo "Replica_$replica Tensorflow with $cores cores on dataset cifar10 with $tf_steps" >> results/benchmark_tensorflow_time_$cores.txt
+# 	date >> results/benchmark_tensorflow_time_$cores.txt
 
 
-	# Start nmon capturing
-	NMON_FILE_NAME="tensorflow_"$replica"_$(date +"%Y-%m-%d-%H-%M")"
-        NMON_PID=$(nmon -F $NMON_FILE_NAME.nmon -m nmon_stats/ -p -s 2 -c 12000000)
+# 	# Start nmon capturing
+# 	NMON_FILE_NAME="tensorflow_"$replica"_$(date +"%Y-%m-%d-%H-%M")"
+#         NMON_PID=$(nmon -F $NMON_FILE_NAME.nmon -m nmon_stats/ -p -s 2 -c 12000000)
 
-	/usr/bin/time -p -a -o results/benchmark_tensorflow_time_$cores.txt sh -c "python datasets/tensorflow/models/tutorials/image/cifar10/cifar10_train.py --data_dir=datasets/tensorflow/ --train_dir=benchmark_output/tensorflow/cifar10_train --max_steps=$tf_steps --threads=$cores" >> results/benchmark_tensorflow_output_$cores.txt 2>&1
+# 	/usr/bin/time -p -a -o results/benchmark_tensorflow_time_$cores.txt sh -c "python datasets/tensorflow/models/tutorials/image/cifar10/cifar10_train.py --data_dir=datasets/tensorflow/ --train_dir=benchmark_output/tensorflow/cifar10_train --max_steps=$tf_steps --threads=$cores" >> results/benchmark_tensorflow_output_$cores.txt 2>&1
 	
-	# Stop nmon capturing
-        kill -USR2 $NMON_PID
+# 	# Stop nmon capturing
+#         kill -USR2 $NMON_PID
 
-	# Make nmon html graphs
-        sh nmonchart/nmonchart nmon_stats/$NMON_FILE_NAME.nmon nmon_stats/$NMON_FILE_NAME.html
+# 	# Make nmon html graphs
+#         sh nmonchart/nmonchart nmon_stats/$NMON_FILE_NAME.nmon nmon_stats/$NMON_FILE_NAME.html
 	
-	echo "" >> results/benchmark_tensorflow_time_$cores.txt
-else
-	echo "Tensorflow will not be started as you did not choose the ml tools, all tools or the tool itself."
-fi
+# 	echo "" >> results/benchmark_tensorflow_time_$cores.txt
+# else
+# 	echo "Tensorflow will not be started as you did not choose the ml tools, all tools or the tool itself."
+# fi
 
-if [ $toolgroup == "all" ] || [ $toolgroup == "quant" ] || [ $toolgroup == "gromacs" ]
-then
-	# GROMACS
-	# Load correct compiler paths for GCC 7.3.0
-	# Set GCC to 7.3.0 to use GROMACS
-	export PATH=$PWD/gcc/gcc-installed/bin:$PATH
-	export LD_LIBRARY_PATH=$PWD/gcc/gcc-installed/lib64:$LD_LIBRARY_PATH
+# if [ $toolgroup == "all" ] || [ $toolgroup == "quant" ] || [ $toolgroup == "gromacs" ]
+# then
+# 	# GROMACS
+# 	# Load correct compiler paths for GCC 7.3.0
+# 	# Set GCC to 7.3.0 to use GROMACS
+# 	export PATH=$PWD/gcc/gcc-installed/bin:$PATH
+# 	export LD_LIBRARY_PATH=$PWD/gcc/gcc-installed/lib64:$LD_LIBRARY_PATH
 
-	echo "Creating GROMACS test model with $gromacs_steps steps"
-	sed -i "s/nsteps.*/nsteps                  = $gromacs_steps/g" datasets/gromacs/adh_cubic/pme_verlet.mdp
+# 	echo "Creating GROMACS test model with $gromacs_steps steps"
+# 	sed -i "s/nsteps.*/nsteps                  = $gromacs_steps/g" datasets/gromacs/adh_cubic/pme_verlet.mdp
 
-	/usr/local/gromacs/bin/gmx grompp -f datasets/gromacs/adh_cubic/pme_verlet.mdp -c datasets/gromacs/adh_cubic/conf.gro -p datasets/gromacs/adh_cubic/topol.top -o datasets/gromacs/adh_cubic/topol -po datasets/gromacs/adh_cubic/mdout >> /dev/null 2>&1
+# 	/usr/local/gromacs/bin/gmx grompp -f datasets/gromacs/adh_cubic/pme_verlet.mdp -c datasets/gromacs/adh_cubic/conf.gro -p datasets/gromacs/adh_cubic/topol.top -o datasets/gromacs/adh_cubic/topol -po datasets/gromacs/adh_cubic/mdout >> /dev/null 2>&1
 
-	echo "Running GROMACS benchmark with $gromacs_steps steps"
-	rm -rf benchmark_output/gromacs/*
-	echo "Replica_$replica GROMACS with $cores cores on dataset adh_cubic calculating $gromacs_steps steps with CPU pinning enabled" >> results/benchmark_gromacs_time_$cores.txt
-	date >> results/benchmark_gromacs_time_$cores.txt
+# 	echo "Running GROMACS benchmark with $gromacs_steps steps"
+# 	rm -rf benchmark_output/gromacs/*
+# 	echo "Replica_$replica GROMACS with $cores cores on dataset adh_cubic calculating $gromacs_steps steps with CPU pinning enabled" >> results/benchmark_gromacs_time_$cores.txt
+# 	date >> results/benchmark_gromacs_time_$cores.txt
 
 
-	# Start nmon capturing
-	NMON_FILE_NAME="GROMACS_"$replica"_$(date +"%Y-%m-%d-%H-%M")"
-        NMON_PID=$(nmon -F $NMON_FILE_NAME.nmon -m nmon_stats/ -p -s 2 -c 12000000)
+# 	# Start nmon capturing
+# 	NMON_FILE_NAME="GROMACS_"$replica"_$(date +"%Y-%m-%d-%H-%M")"
+#         NMON_PID=$(nmon -F $NMON_FILE_NAME.nmon -m nmon_stats/ -p -s 2 -c 12000000)
 
-	/usr/bin/time -p -a -o results/benchmark_gromacs_time_$cores.txt sh -c "/usr/local/gromacs/bin/gmx mdrun -v -pin on -nt $cores -s datasets/gromacs/adh_cubic/topol.tpr -o benchmark_output/gromacs/benchmark -cpo benchmark_output/gromacs/benchmark -e benchmark_output/gromacs/benchmark -g benchmark_output/gromacs/benchmark -c benchmark_output/gromacs/benchmark" >> results/benchmark_gromacs_output_$cores.txt 2>&1
+# 	/usr/bin/time -p -a -o results/benchmark_gromacs_time_$cores.txt sh -c "/usr/local/gromacs/bin/gmx mdrun -v -pin on -nt $cores -s datasets/gromacs/adh_cubic/topol.tpr -o benchmark_output/gromacs/benchmark -cpo benchmark_output/gromacs/benchmark -e benchmark_output/gromacs/benchmark -g benchmark_output/gromacs/benchmark -c benchmark_output/gromacs/benchmark" >> results/benchmark_gromacs_output_$cores.txt 2>&1
 
-	# Stop nmon capturing
-        kill -USR2 $NMON_PID
+# 	# Stop nmon capturing
+#         kill -USR2 $NMON_PID
 
-	# Make nmon html graphs
-        sh nmonchart/nmonchart nmon_stats/$NMON_FILE_NAME.nmon nmon_stats/$NMON_FILE_NAME.html
+# 	# Make nmon html graphs
+#         sh nmonchart/nmonchart nmon_stats/$NMON_FILE_NAME.nmon nmon_stats/$NMON_FILE_NAME.html
 	
-	echo "" >> results/benchmark_gromacs_time_$cores.txt
+# 	echo "" >> results/benchmark_gromacs_time_$cores.txt
 
-	# Reset to system compiler
-	export PATH=$original_path_variable
-	export LD_LIBRARY_PATH=$original_ld_library_variable
-else
-	echo "GROMACS will not be started as you did not choose the quant tools, all tools or the tool itself."
-fi
+# 	# Reset to system compiler
+# 	export PATH=$original_path_variable
+# 	export LD_LIBRARY_PATH=$original_ld_library_variable
+# else
+# 	echo "GROMACS will not be started as you did not choose the quant tools, all tools or the tool itself."
+# fi
 
 if [ $toolgroup == "all" ] || [ $toolgroup == "genomics" ] || [ $toolgroup == "SPAdes" ]
 then
