@@ -624,8 +624,8 @@ echo "GROMACS compile information:" >> bootable_system_info.txt
 # Set GCC to 7.3.0 to use GROMACS
 export PATH=$PWD/gcc/gcc-installed/bin:$PATH
 export LD_LIBRARY_PATH=$PWD/gcc/gcc-installed/lib64:$LD_LIBRARY_PATH
-gromacs_line=$(/usr/local/gromacs/bin/gmx --version | grep -n "GROMACS version:" | cut -d ":" -f 1)
-/usr/local/gromacs/bin/gmx --version | tail --lines=+$gromacs_line >> bootable_system_info.txt
+# gromacs_line=$(/usr/local/gromacs/bin/gmx --version | grep -n "GROMACS version:" | cut -d ":" -f 1)
+# /usr/local/gromacs/bin/gmx --version | tail --lines=+$gromacs_line >> bootable_system_info.txt
 
 # Reset to system compiler
 export PATH=$original_path_variable
